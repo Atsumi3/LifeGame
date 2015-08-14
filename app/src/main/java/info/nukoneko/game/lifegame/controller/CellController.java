@@ -5,16 +5,15 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Display;
-
-import java.util.Random;
+import android.view.MotionEvent;
 
 import info.nukoneko.game.lifegame.BaseController;
 import info.nukoneko.game.lifegame.MainSurface;
 
 public class CellController extends BaseController {
-    final int tick = 2;
+    final int tick = 60;
     final int margin = 0;
-    public final int rowNums = 100;
+    public final int rowNums = 20;
     int cellSize = 0;
     int maxCellSize = 0;
 
@@ -43,7 +42,6 @@ public class CellController extends BaseController {
         relativeMargin = (maxCellSize - cellSize) / 2;
         _line.setARGB(255, 127, 255, 127);
         _line.setAntiAlias(true);
-        Random random = new Random();
         for (int i = 0 ; i < rowNums; i++){
             for (int j = 0 ; j < rowNums; j++) {
                 int maxLeft = i + ( i * maxCellSize);
@@ -56,10 +54,11 @@ public class CellController extends BaseController {
                         maxRight - relativeMargin,
                         maxBottom - relativeMargin),
                         i,
-                        j,
-                        random.nextInt(100) > 95);
+                        j);
             }
         }
+
+        new FirstPattern().pentadecathlon();
     }
 
     @Override
@@ -77,6 +76,7 @@ public class CellController extends BaseController {
     int count = 0;
     @Override
     public boolean onUpdate() {
+        /*
         if (count % tick == 0) {
             tempCells = cells;
             for (int i = 0; i < rowNums; i++) {
@@ -88,6 +88,93 @@ public class CellController extends BaseController {
         }
         if(count == 60) count = 0;
         count++;
+        */
         return super.onUpdate();
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+        if (count % 60 == 0) {
+            tempCells = cells;
+            for (int i = 0; i < rowNums; i++) {
+                for (int j = 0; j < rowNums; j++) {
+                    tempCells[i][j].liveCheck();
+                }
+            }
+            cells = tempCells;
+            count = 0;
+        }
+        count++;
+        return super.onTouchEvent(event);
+    }
+
+    public class FirstPattern{
+        /**
+         * 8
+         * ■■■□□□
+         * ■■■□□□
+         * ■■■□□□
+         * □□□■■■
+         * □□□■■■
+         * □□□■■■
+         */
+        public void Eight(){
+            if(12 > rowNums){
+                throw new IllegalArgumentException("rowNums is need upper 12");
+            }
+
+            int os = (rowNums / 4);
+
+            int offsetX = os;
+            int offsetY = os;
+
+            cells[offsetX + 0][offsetY + 0].setLive(true);
+            cells[offsetX + 1][offsetY + 0].setLive(true);
+            cells[offsetX + 2][offsetY + 0].setLive(true);
+
+            cells[offsetX + 0][offsetY + 1].setLive(true);
+            cells[offsetX + 1][offsetY + 1].setLive(true);
+            cells[offsetX + 2][offsetY + 1].setLive(true);
+
+            cells[offsetX + 0][offsetY + 2].setLive(true);
+            cells[offsetX + 1][offsetY + 2].setLive(true);
+            cells[offsetX + 2][offsetY + 2].setLive(true);
+
+
+            cells[offsetX + 3][offsetY + 3].setLive(true);
+            cells[offsetX + 4][offsetY + 3].setLive(true);
+            cells[offsetX + 5][offsetY + 3].setLive(true);
+
+            cells[offsetX + 3][offsetY + 4].setLive(true);
+            cells[offsetX + 4][offsetY + 4].setLive(true);
+            cells[offsetX + 5][offsetY + 4].setLive(true);
+
+            cells[offsetX + 3][offsetY + 5].setLive(true);
+            cells[offsetX + 4][offsetY + 5].setLive(true);
+            cells[offsetX + 5][offsetY + 5].setLive(true);
+        }
+
+        public void pentadecathlon(){
+            int os = (rowNums / 4);
+
+            cells[os + 2][os + 0].setLive(true);
+            cells[os + 7][os + 0].setLive(true);
+
+            cells[os + 0][os + 1].setLive(true);
+            cells[os + 1][os + 1].setLive(true);
+
+            cells[os + 3][os + 1].setLive(true);
+            cells[os + 4][os + 1].setLive(true);
+            cells[os + 5][os + 1].setLive(true);
+            cells[os + 6][os + 1].setLive(true);
+
+
+            cells[os + 8][os + 1].setLive(true);
+            cells[os + 9][os + 1].setLive(true);
+
+            cells[os + 2][os + 2].setLive(true);
+            cells[os + 7][os + 2].setLive(true);
+        }
     }
 }

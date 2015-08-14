@@ -24,6 +24,10 @@ public class Cell {
         return liveState;
     }
 
+    public void setLive(boolean live){
+        this.liveState = live;
+    }
+
     public void liveCheck(){
         int liveCells = getLiveCellCount();
         if (liveState){

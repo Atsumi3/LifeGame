@@ -2,6 +2,7 @@ package info.nukoneko.game.lifegame;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -26,6 +27,11 @@ public class MainSurface
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
 
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event){
+        return this.mGameManager.onTouchEvent(event);
     }
 
     @Override
