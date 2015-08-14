@@ -7,13 +7,16 @@ import android.view.WindowManager;
 
 public class MainActivity
         extends AppCompatActivity {
+    MainSurface surface;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        setContentView(new MainSurface(this));
+        this.surface = new MainSurface(this);
+
+        setContentView(this.surface);
     }
 
     @Override

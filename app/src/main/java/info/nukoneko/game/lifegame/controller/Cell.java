@@ -10,6 +10,9 @@ public class Cell {
     final int y;
     public final Rect rect;
     private boolean liveState = true;
+    public Cell(CellController controller, Rect rect, int x, int y){
+        this(controller, rect, x, y, false);
+    }
     public Cell(CellController controller, Rect rect, int x, int y, boolean defaultLive){
         this.controller = controller;
         this.rect = rect;
@@ -32,12 +35,20 @@ public class Cell {
                 liveState = false;
                 return;
             }
+            if(liveCells == 2 || liveCells == 3) {
+                liveState = true;
+                return;
+            }
         }else {
             if(liveCells == 3) {
                 liveState = true;
                 return;
+            }else {
+                liveState = false;
+                return;
             }
         }
+        liveState = false;
     }
 
     private int getLiveCellCount() {
@@ -62,11 +73,35 @@ public class Cell {
     }
 
     private boolean isLive(int _x, int _y){
+        int targetX = 0;
+        int targetY = 0;
         try{
-            return controller.cells[_x][_y].isLive();
+            final int rowMax = controller.rowNums -1;
+            if (_x == -1){
+                targetX = rowMax;
+            }else if (_x == controller.rowNums){
+                targetX = 0;
+            }else {
+                targetX = _x;
+            }
+            if (_y == -1){
+                targetY = rowMax;
+            }else if (_y == controller.rowNums){
+                targetY = 0;
+            }else {
+                targetY = _y;
+            }
+            return controller.cells[targetX][targetY].isLive();
         }
         catch (Exception e){
+            System.out.println("おかしい " + e.getLocalizedMessage());
+            System.out.println(String.format("%d %d", targetX, targetY));
             return false;
         }
+    }
+
+    private void Log(int cells, String comment){
+        if(!comment.equals("bug")) return;
+        System.out.println(String.format("[LIVE-CHECK] x:%d y:%d cnt:%d live:%b %s",x, y, cells, liveState, comment));
     }
 }

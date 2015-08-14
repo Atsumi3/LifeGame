@@ -12,17 +12,17 @@ import info.nukoneko.game.lifegame.BaseController;
 import info.nukoneko.game.lifegame.MainSurface;
 
 public class CellController extends BaseController {
-    final int tick = 3;
-    final int margin = 2;
-    final static int rowNums = 100;
+    final int tick = 2;
+    final int margin = 0;
+    public final int rowNums = 100;
     int cellSize = 0;
     int maxCellSize = 0;
 
     int relativeMargin = 0;
 
-    public Cell[][] cells;
+    public Cell[][] tempCells;
 
-    private Cell[][] _cells;
+    public Cell[][] cells;
 
     private Paint _line = new Paint();
 
@@ -32,8 +32,10 @@ public class CellController extends BaseController {
     }
 
     public void init(){
+        System.out.println("Cell Initialize!");
+
+        tempCells = new Cell[rowNums][rowNums];
         cells = new Cell[rowNums][rowNums];
-        _cells = new Cell[rowNums][rowNums];
         Display disp = ((AppCompatActivity)holder.getContext()).getWindowManager().getDefaultDisplay();
         int size = (disp.getHeight() > disp.getWidth()) ? disp.getWidth() : disp.getHeight();
         cellSize = (size / rowNums) - margin;
@@ -48,11 +50,14 @@ public class CellController extends BaseController {
                 int maxRight = maxLeft + maxCellSize;
                 int maxTop = j + (j * maxCellSize);
                 int maxBottom = maxTop + maxCellSize;
-                _cells[i][j] = new Cell(this, new Rect(
+                cells[i][j] = new Cell(this, new Rect(
                         maxLeft + relativeMargin,
                         maxTop + relativeMargin,
                         maxRight - relativeMargin,
-                        maxBottom - relativeMargin), i, j, random.nextInt(10) > 8);
+                        maxBottom - relativeMargin),
+                        i,
+                        j,
+                        random.nextInt(100) > 95);
             }
         }
     }
@@ -61,8 +66,8 @@ public class CellController extends BaseController {
     public void onDraw(Canvas c) {
         for (int i = 0; i < rowNums; i++){
             for (int j = 0 ; j < rowNums; j++){
-                Cell cell = _cells[i][j];
-                if(cell.isLive()){
+                Cell cell = cells[i][j];
+                if( cell.isLive()){
                     c.drawRect(cell.rect, _line);
                 }
             }
@@ -73,13 +78,13 @@ public class CellController extends BaseController {
     @Override
     public boolean onUpdate() {
         if (count % tick == 0) {
-            cells = _cells;
+            tempCells = cells;
             for (int i = 0; i < rowNums; i++) {
                 for (int j = 0; j < rowNums; j++) {
-                    cells[i][j].liveCheck();
+                    tempCells[i][j].liveCheck();
                 }
             }
-            _cells = cells;
+            cells = tempCells;
         }
         if(count == 60) count = 0;
         count++;
